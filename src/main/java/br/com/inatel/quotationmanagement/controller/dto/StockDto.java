@@ -9,7 +9,7 @@ import br.com.inatel.quotationmanagement.model.Stock;
 
 public class StockDto {
 	
-	private Long id;
+	private String id;
 	private String stockId;
 	private List<Quote> quotes = new ArrayList<>();
 	
@@ -19,7 +19,7 @@ public class StockDto {
 		this.quotes = stock.getQuotes();
 	}
 	
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 	

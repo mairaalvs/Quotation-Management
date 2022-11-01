@@ -6,7 +6,9 @@ import org.springframework.stereotype.Repository;
 import br.com.inatel.quotationmanagement.model.Stock;
 
 @Repository
-public interface StockRepository extends JpaRepository<Stock, Long> {
+public interface StockRepository extends JpaRepository<Stock, String> {
 	
-	Optional<Stock> findByStockId(Long id);
+	Optional<Stock> findStockByStockId(String id);
+	
+	Stock findOneStockByStockId(String stockId);
 }

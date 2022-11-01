@@ -8,7 +8,7 @@ import br.com.inatel.quotationmanagement.model.Quote;
 
 public class QuoteDto {
 	
-	private Long id;
+	private String id;
 	private LocalDate dateQuoteDto;
 	private double valueQuoteDto;
 	
@@ -22,7 +22,7 @@ public class QuoteDto {
 		return quotes.stream().map(QuoteDto::new).collect(Collectors.toList());
 	}
 	
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 	public LocalDate getDateQuoteDto() {

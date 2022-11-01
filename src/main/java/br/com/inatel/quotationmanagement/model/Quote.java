@@ -1,19 +1,18 @@
 package br.com.inatel.quotationmanagement.model;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 
 @Entity
 public class Quote {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String id;
 	
 	private LocalDate dateQuote;
 	private double valueQuote;
@@ -21,20 +20,20 @@ public class Quote {
 	@ManyToOne
 	private Stock stock;
 	
+	@PrePersist
+    private void onSave() {
+		this.id = UUID.randomUUID().toString();
+    }
+	
 	public Quote(Stock stock, LocalDate dateQuote, double valueQuote) {
 		this.stock = stock;
 		this.dateQuote = dateQuote;
 		this.valueQuote = valueQuote;
 	}
 	
-//	@PrePersist
-//    private void onSave() {
-//		this.id = UUID.randomUUID().toString();
-//    }
-	
 	public Quote() {}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 

@@ -11,7 +11,7 @@ import br.com.inatel.quotationmanagement.model.Stock;
 
 public class StockQuoteDto {
 	
-	private Long id;
+	private String id;
 	private String stockId;
 	private Map<LocalDate, Double> quotesMap = new HashMap<>();
 
@@ -24,8 +24,12 @@ public class StockQuoteDto {
 	public static List<StockQuoteDto> convert(List<Stock> stocks) {
 		return stocks.stream().map(StockQuoteDto::new).collect(Collectors.toList());
 	}
+	
+	public static StockQuoteDto convertOneStock(Stock stock) {
+		return new StockQuoteDto(stock);
+	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
