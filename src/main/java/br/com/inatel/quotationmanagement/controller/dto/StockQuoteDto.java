@@ -24,10 +24,6 @@ public class StockQuoteDto {
 	public static List<StockQuoteDto> convert(List<Stock> stocks) {
 		return stocks.stream().map(StockQuoteDto::new).collect(Collectors.toList());
 	}
-	
-	public static StockQuoteDto convertOneStock(Stock stock) {
-		return new StockQuoteDto(stock);
-	}
 
 	public String getId() {
 		return id;
