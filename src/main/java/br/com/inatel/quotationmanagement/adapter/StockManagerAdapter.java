@@ -43,6 +43,18 @@ public class StockManagerAdapter {
 		return stocksAtManager;
 	}
 	
-
+//	@PostConstruct
+//	public void notificationRegister() {
+//		
+//		NotificationForm form = new NotificationForm(host,port);
+//		
+//		WebClient.create(URL_MANAGER)
+//			.post()
+//			.uri("/notification")
+//			.bodyValue(form)
+//			.retrieve()
+//			.toBodilessEntity()
+//			.block();
+//	}
 	
 }
