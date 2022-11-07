@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Quote {
@@ -15,7 +16,10 @@ public class Quote {
 	@Id
 	private String id;
 	
+	@NotNull
 	private LocalDate dateQuote;
+	
+	@NotNull
 	private double valueQuote;
 	
 	@ManyToOne

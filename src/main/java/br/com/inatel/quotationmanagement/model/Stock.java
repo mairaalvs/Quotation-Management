@@ -17,12 +17,13 @@ import org.hibernate.validator.constraints.Length;
 @Entity
 public class Stock {
 	
-	@Id
+	@Id @NotNull
 	private String id;
 	
+	@NotNull
 	private String stockId;
 	
-	@OneToMany(mappedBy = "stock")
+	@OneToMany(mappedBy = "stock") 
 	private List<Quote> quotes = new ArrayList<>();
 	
 	@PrePersist
