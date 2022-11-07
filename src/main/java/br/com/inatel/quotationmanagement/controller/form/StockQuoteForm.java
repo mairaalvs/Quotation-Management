@@ -6,13 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 import br.com.inatel.quotationmanagement.model.Quote;
-import br.com.inatel.quotationmanagement.model.Stock;
+import br.com.inatel.quotationmanagement.model.StockAux;
 
 public class StockQuoteForm {
 	
+	@NotNull @NotEmpty @Length(min = 2)
 	private String stockId;
 	
+	@NotNull @NotEmpty
 	private Map<LocalDate, Double> quotesMap = new HashMap<LocalDate, Double>();
 	
 	public StockQuoteForm(String stockId, Map<LocalDate, Double> quotesMap) {
@@ -20,7 +27,7 @@ public class StockQuoteForm {
 		this.quotesMap = quotesMap;
 	}
 	
-	public List<Quote> addQuote(Stock stock){
+	public List<Quote> addQuote(StockAux stock){
 		List<Quote> quotes = new ArrayList<>();
 		
 		quotesMap.forEach((d, v) -> {
@@ -31,8 +38,8 @@ public class StockQuoteForm {
 		return stock.getQuotes();
 	}
 	
-	public Stock convert() {
-		return new Stock(stockId);
+	public StockAux convert() {
+		return new StockAux(stockId);
 	}
 	
 	public String getStockId() {

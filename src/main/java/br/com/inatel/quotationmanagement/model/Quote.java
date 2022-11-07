@@ -23,15 +23,15 @@ public class Quote {
 	private double valueQuote;
 	
 	@ManyToOne
-	private Stock stock;
+	private StockAux stockAux;
 	
 	@PrePersist
     private void onSave() {
 		this.id = UUID.randomUUID().toString();
     }
 	
-	public Quote(Stock stock, LocalDate dateQuote, double valueQuote) {
-		this.stock = stock;
+	public Quote(StockAux stock, LocalDate dateQuote, double valueQuote) {
+		this.stockAux = stock;
 		this.dateQuote = dateQuote;
 		this.valueQuote = valueQuote;
 	}
@@ -42,8 +42,8 @@ public class Quote {
 		return id;
 	}
 
-	public Stock getStock() {
-		return stock;
+	public StockAux getStock() {
+		return stockAux;
 	}
 
 	public LocalDate getDateQuote() {

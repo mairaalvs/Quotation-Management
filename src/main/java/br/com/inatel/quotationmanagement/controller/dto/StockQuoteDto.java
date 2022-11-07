@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import br.com.inatel.quotationmanagement.model.Quote;
-import br.com.inatel.quotationmanagement.model.Stock;
+import br.com.inatel.quotationmanagement.model.StockAux;
 
 public class StockQuoteDto {
 	
@@ -15,13 +15,13 @@ public class StockQuoteDto {
 	private String stockId;
 	private Map<LocalDate, Double> quotesMap = new HashMap<>();
 
-	public StockQuoteDto(Stock stock) {
+	public StockQuoteDto(StockAux stock) {
 		this.id = stock.getId();
 		this.stockId = stock.getStockId();
 		stock.getQuotes().forEach(q -> quotesMap.put(q.getDateQuote(),q.getValueQuote()));
 	}
 	
-	public static List<StockQuoteDto> convert(List<Stock> stocks) {
+	public static List<StockQuoteDto> convert(List<StockAux> stocks) {
 		return stocks.stream().map(StockQuoteDto::new).collect(Collectors.toList());
 	}
 

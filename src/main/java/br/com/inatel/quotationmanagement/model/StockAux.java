@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 @Entity
-public class Stock {
+public class StockAux {
 	
 	@Id @NotNull
 	private String id;
@@ -23,7 +23,7 @@ public class Stock {
 	@NotNull
 	private String stockId;
 	
-	@OneToMany(mappedBy = "stock") 
+	@OneToMany(mappedBy = "stockAux") 
 	private List<Quote> quotes = new ArrayList<>();
 	
 	@PrePersist
@@ -31,14 +31,14 @@ public class Stock {
 		this.id = UUID.randomUUID().toString();
 	}
 
-	public Stock(String id, String stockId) {
+	public StockAux(String id, String stockId) {
 		this.id = id;
 		this.stockId = stockId;
 	}
 	
-	public Stock() {}
+	public StockAux() {}
 
-	public Stock(String stockId) {
+	public StockAux(String stockId) {
 		this.stockId = stockId;
 	}
 
@@ -71,7 +71,7 @@ public class Stock {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Stock other = (Stock) obj;
+		StockAux other = (StockAux) obj;
 		return Objects.equals(id, other.id);
 	}
 	

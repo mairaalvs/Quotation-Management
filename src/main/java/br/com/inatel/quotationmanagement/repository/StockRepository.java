@@ -3,12 +3,12 @@ package br.com.inatel.quotationmanagement.repository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import br.com.inatel.quotationmanagement.model.Stock;
+import br.com.inatel.quotationmanagement.model.StockAux;
 
 @Repository
-public interface StockRepository extends JpaRepository<Stock, String> {
+public interface StockRepository extends JpaRepository<StockAux, String> {
 	
-	Optional<Stock> findStockByStockId(String id);
+	Optional<StockAux> findStockByStockId(String id);
 	
-	Stock findOneStockByStockId(String stockId);
+	StockAux findOneStockByStockId(String stockId);
 }

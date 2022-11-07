@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.inatel.quotationmanagement.model.Quote;
-import br.com.inatel.quotationmanagement.model.Stock;
+import br.com.inatel.quotationmanagement.model.StockAux;
 
 public class StockDto {
 	
@@ -13,7 +13,7 @@ public class StockDto {
 	private String stockId;
 	private List<Quote> quotes = new ArrayList<>();
 	
-	public StockDto(Stock stock) {
+	public StockDto(StockAux stock) {
 		this.id = stock.getId();
 		this.stockId = stock.getStockId();
 		this.quotes = stock.getQuotes();
@@ -31,7 +31,7 @@ public class StockDto {
 		return QuoteDto.convert(quotes);
 	}
 	
-	public static List<StockDto> convert(List<Stock> stocks) {
+	public static List<StockDto> convert(List<StockAux> stocks) {
 		return stocks.stream().map(StockDto::new).collect(Collectors.toList());
 	}
 	

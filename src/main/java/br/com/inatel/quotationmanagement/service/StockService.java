@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import br.com.inatel.quotationmanagement.adapter.StockManagerAdapter;
 import br.com.inatel.quotationmanagement.controller.dto.StockManagerDto;
 import br.com.inatel.quotationmanagement.model.Quote;
-import br.com.inatel.quotationmanagement.model.Stock;
+import br.com.inatel.quotationmanagement.model.StockAux;
 import br.com.inatel.quotationmanagement.repository.QuoteRepository;
 import br.com.inatel.quotationmanagement.repository.StockRepository;
 
@@ -30,15 +30,14 @@ public class StockService {
 	@Autowired
 	StockManagerAdapter stockManagerAdapter;
 
-	@Cacheable(value = "stocksList")
-	public List<Stock> findAll() {
-		List<Stock> stocks = stockRepository.findAll();
+	public List<StockAux> findAll() {
+		List<StockAux> stocks = stockRepository.findAll();
 		stocks.forEach(s -> s.getQuotes().size());
 		return stocks;
 	}
 
-	public Optional<Stock> findByStockId(String stockId) {
-		Stock stock = stockRepository.findOneStockByStockId(stockId);
+	public Optional<StockAux> findByStockId(String stockId) {
+		StockAux stock = stockRepository.findOneStockByStockId(stockId);
 		if (stock != null) {
 			stock.getQuotes().size();
 			return Optional.of(stock);
@@ -46,23 +45,21 @@ public class StockService {
 		return Optional.empty();
 	}
 
-	@CacheEvict(value = "stocksList", allEntries = true)
 	public void saveQuotes(List<Quote> quotes) {
 		quotes.forEach(q -> quoteRepository.save(q));
 	}
 
-	@CacheEvict(value = "stocksList", allEntries = true)
-	public void save(Stock stock) {
+	public void save(StockAux stock) {
 		stockRepository.save(stock);
 	}
 
-	@CacheEvict(value = "stocksList", allEntries = true)
 	public void delete() {
-		System.out.println("Deletado!");
+		System.out.println("The cache was cleaned!");
 	}
 
 	public boolean existAtStockManager(String stockId) {
 		List<StockManagerDto> stocksAtManager = stockManagerAdapter.listAll();
 		return stocksAtManager.stream().anyMatch(s -> s.getId().equals(stockId));
 	}
+	
 }
