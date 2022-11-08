@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.inatel.quotationmanagement.controller.dto.StockQuoteDto;
@@ -46,8 +45,10 @@ public class StockController {
 			StockAux stockQuote = OpStock.get();
 			StockQuoteDto stockQuotesDto = new StockQuoteDto(stockQuote);
 			return new ResponseEntity<>(stockQuotesDto, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Stock Not Found. Please check and retry the search!", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>("Stock Not Found. Please check and retry the search!", HttpStatus.NOT_FOUND);
+		
 	}
 
 	@PostMapping()
