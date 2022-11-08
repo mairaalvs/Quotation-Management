@@ -8,7 +8,8 @@ import br.com.inatel.quotationmanagement.model.StockAux;
 @Repository
 public interface StockRepository extends JpaRepository<StockAux, String> {
 	
-	Optional<StockAux> findStockByStockId(String id);
-	
 	StockAux findOneStockByStockId(String stockId);
+	
+	Optional<StockAux> findByStockId(String stockId);
+	
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.inatel.quotationmanagement.controller.dto.StockQuoteDto;
 import br.com.inatel.quotationmanagement.controller.form.StockQuoteForm;
+import br.com.inatel.quotationmanagement.model.Quote;
 import br.com.inatel.quotationmanagement.model.StockAux;
 import br.com.inatel.quotationmanagement.service.StockService;
 
@@ -72,5 +73,10 @@ public class StockController {
 	public void delete() {
 		stockService.delete();
 	}
+
+	@DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteStocks(@PathVariable String id){
+        return stockService.deleteStock(id);
+    }
 
 }

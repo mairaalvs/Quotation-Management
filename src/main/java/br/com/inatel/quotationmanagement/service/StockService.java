@@ -7,7 +7,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.inatel.quotationmanagement.adapter.StockManagerAdapter;
@@ -61,5 +62,17 @@ public class StockService {
 		List<StockManagerDto> stocksAtManager = stockManagerAdapter.listAll();
 		return stocksAtManager.stream().anyMatch(s -> s.getId().equals(stockId));
 	}
+	
+	@CacheEvict(value = "stockList", allEntries = true)
+    public ResponseEntity<?> deleteStock(String stockId){
+        Optional<StockAux> opStock = stockRepository.findByStockId(stockId);
+        if(opStock.isPresent()){
+            List<Quote> quotes = opStock.get().getQuotes();
+            stockRepository.delete(opStock.get());
+            quoteRepository.deleteAll(quotes);
+            return new ResponseEntity<>("Deleted",HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>("StockId Not Found",HttpStatus.NOT_FOUND);
+    }
 	
 }
