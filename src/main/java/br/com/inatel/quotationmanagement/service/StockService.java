@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.inatel.quotationmanagement.adapter.StockManagerAdapter;
+import br.com.inatel.quotationmanagement.controller.dto.StockDto;
 import br.com.inatel.quotationmanagement.controller.dto.StockManagerDto;
+import br.com.inatel.quotationmanagement.controller.dto.StockQuoteDto;
+import br.com.inatel.quotationmanagement.controller.form.StockQuoteForm;
 import br.com.inatel.quotationmanagement.model.Quote;
 import br.com.inatel.quotationmanagement.model.StockAux;
 import br.com.inatel.quotationmanagement.repository.QuoteRepository;
@@ -39,6 +42,7 @@ public class StockService {
 
 	public Optional<StockAux> findByStockId(String stockId) {
 		StockAux stock = stockRepository.findOneStockByStockId(stockId);
+				
 		if (stock != null) {
 			stock.getQuotes().size();
 			return Optional.of(stock);
@@ -54,7 +58,7 @@ public class StockService {
 		stockRepository.save(stock);
 	}
 
-	public void delete() {
+	public void deleteCache() {
 		System.out.println("The cache was cleaned!");
 	}
 
@@ -64,15 +68,14 @@ public class StockService {
 	}
 	
 	@CacheEvict(value = "stockList", allEntries = true)
-    public ResponseEntity<?> deleteStock(String stockId){
+    public ResponseEntity<?> delete(String stockId){
         Optional<StockAux> opStock = stockRepository.findByStockId(stockId);
         if(opStock.isPresent()){
             List<Quote> quotes = opStock.get().getQuotes();
             stockRepository.delete(opStock.get());
             quoteRepository.deleteAll(quotes);
-            return new ResponseEntity<>("Deleted",HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("Delete",HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>("StockId Not Found",HttpStatus.NOT_FOUND);
-    }
-	
+        return new ResponseEntity<>("StockId Not Found. Please check and retry the search!",HttpStatus.NOT_FOUND);
+    }  
 }

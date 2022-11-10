@@ -3,6 +3,8 @@ package br.com.inatel.quotationmanagement.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,11 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.inatel.quotationmanagement.controller.dto.StockDto;
 import br.com.inatel.quotationmanagement.controller.dto.StockQuoteDto;
 import br.com.inatel.quotationmanagement.controller.form.StockQuoteForm;
-import br.com.inatel.quotationmanagement.model.Quote;
 import br.com.inatel.quotationmanagement.model.StockAux;
 import br.com.inatel.quotationmanagement.service.StockService;
 
@@ -53,30 +56,41 @@ public class StockController {
 	}
 
 	@PostMapping()
-	@CacheEvict(value = "stocksList", allEntries = true)
-	public ResponseEntity<?> saveStock(@RequestBody StockQuoteForm form) {
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public ResponseEntity<StockQuoteDto> saveStock(@RequestBody StockQuoteForm form) {
 
-		Optional<StockAux> OpStock = stockService.findByStockId(form.getStockId());
-
-		if (OpStock.isPresent()) {
-			StockAux stock = OpStock.get();
+		Optional<StockAux> stocksOpt = stockService.findByStockId(form.getStockId());
+		
+		System.out.println(form.getStockId());
+		System.out.println(stocksOpt);
+		
+		if(stocksOpt.isPresent()) {
+			StockAux stock = stocksOpt.get();
 			form.addQuote(stock);
 			stockService.saveQuotes(stock.getQuotes());
 			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<>("Bad Request. Please verify that the stock was created correctly to create a quote!", HttpStatus.BAD_REQUEST);
 		}
+		else if(stockService.existAtStockManager(form.getStockId())){
+			StockAux stock = form.convert();
+			stockService.save(stock);
+			form.addQuote(stock);
+			stockService.saveQuotes(stock.getQuotes());
+			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.CREATED);
+		}
+		
+		 return ResponseEntity.badRequest().build();
 	}
+	
 	
 	@DeleteMapping("/stockcache")
 	@CacheEvict(value = "stocksAtManagerList")
-	public void delete() {
-		stockService.delete();
+	public void deleteCache() {
+		stockService.deleteCache();
 	}
 
 	@DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteStocks(@PathVariable String id){
-        return stockService.deleteStock(id);
+    public ResponseEntity<?> delete(@PathVariable String id){
+        return stockService.delete(id);
     }
 
 }
