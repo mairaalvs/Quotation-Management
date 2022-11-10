@@ -68,7 +68,7 @@ public class StockServiceTest {
 	//salvando um estoque no banco de dados
 	@Test
 	void returnAValidStockSaveAtDb() {
-		StockAux toSave = new StockAux("petr1");
+		StockAux toSave = new StockAux("mgl");
 		stockService.save(toSave);
 		Optional<StockAux> stockFound = stockService.findByStockId(toSave.getStockId());
 		
