@@ -100,5 +100,5 @@ public class StockService {
             return new ResponseEntity<>("Delete",HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>("StockId Not Found. Please check and retry the search!",HttpStatus.NOT_FOUND);
-    }  
+    }	
 }

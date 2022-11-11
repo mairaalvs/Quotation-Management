@@ -16,7 +16,5 @@ public interface StockRepository extends JpaRepository<StockAux, String> {
 	StockAux findOneStockByStockId(String stockId);
 	
 	Optional<StockAux> findByStockId(String stockId);
-	//---
-	StockAux findOneByStockId(String stockId);
-	//---
+	
 }
