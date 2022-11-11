@@ -33,7 +33,7 @@ docker container run --name stockmanager --network=inatel -p 8080:8080 -d adauto
 
 ### 💻 How it works
 
-### The application developed, called Quotation Management, is a REST based application whose purpose is to store quotes from stock market. A user can register as many quotes as he wants for the same stock and a user can register quotes from different stocks. But, a stock can only be registered in Quotation Management if it is already registered in Stock Manager.
+#### The application developed, called Quotation Management, is a REST based application whose purpose is to store quotes from stock market. A user can register as many quotes as he wants for the same stock and a user can register quotes from different stocks. But, a stock can only be registered in Quotation Management if it is already registered in Stock Manager.
 
 - To register a new stock in Stock Manager:
 #### POST http://localhost:8080/stock
