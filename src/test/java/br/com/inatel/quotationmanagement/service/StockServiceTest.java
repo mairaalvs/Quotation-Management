@@ -23,10 +23,11 @@ public class StockServiceTest {
 	@Autowired
 	private StockService stockService;
 	
-//	given a get on all stock (dado um get em todo o estoque)
-//	when receive all stocks (quando receber todos os estoques)
-//	then check the information (então verifico as informações)
-	
+	/**
+	 * Given a get on all stock
+	 * When receive all stocks
+	 * Then check the information
+	 */	
 	@Test
 	public void returnAllListOfStocks() {
 		List<StockAux> stockQuotes = stockService.findAll();
@@ -38,10 +39,10 @@ public class StockServiceTest {
 //		assertEquals(stockQuotesDto.get(0).getQuotesMap().size(), 0);
 	}
 	
-//	given a get on stock valid (dado um get em um estoque valido)
-//	(quando recebe-lo)
-//	(então verifico suas informações)
-	
+	/** Given a get on stock by stockId valid
+	 * When you get it
+	 * Then check the information
+	 */
 	@Test
 	public void returnListOfQuotesByStockIdValid() {
 		List<StockAux> stockQuotes = new ArrayList<>();
@@ -55,9 +56,10 @@ public class StockServiceTest {
 		assertEquals(stockQuotesDto.get(0).getQuotesMap().size(), 3);
 	}
 	
-//	given Get All Stock (dado um get em um estoque invalido)
-//	(então returno lista de Cotações Vazia)
-	
+	/**
+	 * Given a get on stock by stockId invalid
+	 * Then return empty quotes list
+	 */
 	@Test
 	void returnListOfQuotesEmptyByStockIdInvalid() {
 		Optional<StockAux> OpStock = stockService.findByStockId("petr5");
@@ -65,10 +67,12 @@ public class StockServiceTest {
 		assertTrue(OpStock.isEmpty());
 	}
 	
-	//salvando um estoque no banco de dados
+	/**
+	 * Saving a stock in the database
+	 */
 	@Test
 	void returnAValidStockSaveAtDb() {
-		StockAux toSave = new StockAux("mgl");
+		StockAux toSave = new StockAux("petr1");
 		stockService.save(toSave);
 		Optional<StockAux> stockFound = stockService.findByStockId(toSave.getStockId());
 		

@@ -14,6 +14,12 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
+/**
+ * 
+ * @author Maira ALves
+ * @since Oct. 2022
+ */
+
 @Entity
 public class StockAux {
 	
@@ -42,6 +48,10 @@ public class StockAux {
 		this.stockId = stockId;
 	}
 
+	/**
+	 * Methods getters and setters
+	 */
+	
 	public String getId() {
 		return id;
 	}
@@ -57,24 +67,4 @@ public class StockAux {
 	public void setQuotes(Quote quote) {
 		this.quotes.add(quote);
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		StockAux other = (StockAux) obj;
-		return Objects.equals(id, other.id);
-	}
-	
-	
-	
 }

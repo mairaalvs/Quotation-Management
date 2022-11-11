@@ -14,6 +14,11 @@ import org.hibernate.validator.constraints.Length;
 import br.com.inatel.quotationmanagement.model.Quote;
 import br.com.inatel.quotationmanagement.model.StockAux;
 
+/**
+ * 
+ * @author Maira ALves
+ * @since Oct. 2022
+ */
 public class StockQuoteForm {
 	
 	@NotNull @NotEmpty @Length(min = 2)
@@ -22,11 +27,21 @@ public class StockQuoteForm {
 	@NotNull @NotEmpty
 	private Map<LocalDate, Double> quotesMap = new HashMap<LocalDate, Double>();
 	
+	/**
+	 * Instantiates a new stock quote form.
+	 * @param stockId
+	 * @param quotesMap
+	 */
 	public StockQuoteForm(String stockId, Map<LocalDate, Double> quotesMap) {
 		this.stockId = stockId;
 		this.quotesMap = quotesMap;
 	}
 	
+	/**
+	 * 
+	 * @param stock
+	 * @return list of required stock quotes
+	 */
 	public List<Quote> addQuote(StockAux stock){
 		List<Quote> quotes = new ArrayList<>();
 		
@@ -38,9 +53,17 @@ public class StockQuoteForm {
 		return stock.getQuotes();
 	}
 	
+	/**
+	 * 
+	 * @return the stock
+	 */
 	public StockAux convert() {
 		return new StockAux(stockId);
 	}
+	
+	/**
+	 * Methods getters and setters
+	 */
 	
 	public String getStockId() {
 		return stockId;

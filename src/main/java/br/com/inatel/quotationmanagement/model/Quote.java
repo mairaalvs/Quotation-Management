@@ -10,6 +10,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 
+/**
+ * 
+ * @author Maira ALves
+ * @since Oct. 2022
+ */
+
 @Entity
 public class Quote {
 	
@@ -38,6 +44,10 @@ public class Quote {
 	
 	public Quote() {}
 
+	/**
+	 * Methods getters and setters
+	 */
+	
 	public String getId() {
 		return id;
 	}
@@ -57,24 +67,6 @@ public class Quote {
 	public void setValue(double valueQuote) {
 		this.valueQuote = valueQuote;
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Quote other = (Quote) obj;
-		return Objects.equals(id, other.id);
-	}
-	
 	
 	
 }

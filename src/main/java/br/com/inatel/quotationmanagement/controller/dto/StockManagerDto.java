@@ -1,5 +1,10 @@
 package br.com.inatel.quotationmanagement.controller.dto;
 
+/**
+ * 
+ * @author Maira ALves
+ * @since Oct. 2022
+ */
 public class StockManagerDto {
 	
 	private String id;

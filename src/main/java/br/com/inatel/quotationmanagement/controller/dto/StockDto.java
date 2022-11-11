@@ -7,6 +7,12 @@ import java.util.stream.Collectors;
 import br.com.inatel.quotationmanagement.model.Quote;
 import br.com.inatel.quotationmanagement.model.StockAux;
 
+
+/**
+ * 
+ * @author Maira ALves
+ * @since Oct. 2022
+ */
 public class StockDto {
 	
 	private String id;
@@ -19,6 +25,19 @@ public class StockDto {
 		this.quotes = stock.getQuotes();
 	}
 	
+	/**
+	 * 
+	 * @param stocks
+	 * @return the list of stocksDto
+	 */
+	public static List<StockDto> convert(List<StockAux> stocks) {
+		return stocks.stream().map(StockDto::new).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Methods getters
+	 */
+	
 	public String getId() {
 		return id;
 	}
@@ -30,10 +49,6 @@ public class StockDto {
 	public List<QuoteDto> getQuotes() {
 		return QuoteDto.convert(quotes);
 	}
-	
-	public static List<StockDto> convert(List<StockAux> stocks) {
-		return stocks.stream().map(StockDto::new).collect(Collectors.toList());
-	}
-	
+		
 	
 }

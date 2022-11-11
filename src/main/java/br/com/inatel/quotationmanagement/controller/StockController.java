@@ -19,11 +19,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.inatel.quotationmanagement.controller.dto.StockDto;
 import br.com.inatel.quotationmanagement.controller.dto.StockQuoteDto;
 import br.com.inatel.quotationmanagement.controller.form.StockQuoteForm;
 import br.com.inatel.quotationmanagement.model.StockAux;
 import br.com.inatel.quotationmanagement.service.StockService;
+
+
+/**
+ * 
+ * @author Maira ALves
+ * @since Oct. 2022
+ */
 
 @RestController
 @RequestMapping("/stock")
@@ -32,6 +38,10 @@ public class StockController {
 	@Autowired
 	private StockService stockService;
 
+	/**
+	 * the list of all stocks and their quotes already entered
+	 * @return
+	 */
 	@GetMapping
 	@Cacheable(value = "stocksList")
 	public List<StockQuoteDto> list() {
@@ -40,6 +50,11 @@ public class StockController {
 		return StocksQuotesDto;
 	}
 
+	/**
+	 * 
+	 * @param stockId
+	 * @return only Stock searched by your stockId 
+	 */
 	@GetMapping("/{stockId}")
 	public ResponseEntity<?> listOne(@PathVariable("stockId") String stockId) {
 
@@ -55,42 +70,105 @@ public class StockController {
 		
 	}
 
-	@PostMapping()
+	/**
+	 * 
+	 * @param form
+	 * @return ResponseEntity and response body whether Stock was created or not 
+	 */
+//	@PostMapping()
+//	@ResponseStatus(code = HttpStatus.CREATED)
+//	public ResponseEntity<?> saveStock(@RequestBody StockQuoteForm form) {
+//
+//		Optional<StockAux> OpStock = stockService.findByStockId(form.getStockId());
+//		
+//		
+//		if(OpStock.isPresent()) {
+//			StockAux stock = OpStock.get();
+//			form.addQuote(stock);
+//			stockService.saveQuotes(stock.getQuotes());
+//			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.CREATED);
+//		}
+//		else if(stockService.existAtStockManager(form.getStockId())){
+//			StockAux stock = form.convert();
+//			stockService.save(stock);
+//			form.addQuote(stock);
+//			stockService.saveQuotes(stock.getQuotes());
+//			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.CREATED);
+//		} else {
+//			return new ResponseEntity<>("Bad Request. Please verify that the stock was created correctly to create a quote", HttpStatus.BAD_REQUEST);
+//		}
+//		
+////		if(stockService.existAtStockManager(form.getStockId())){
+////			
+////		}
+//	}
+	
+//	@PostMapping()
+//	@CacheEvict(value = {"stocksList", "oneStock"}, allEntries = true)
+//	public ResponseEntity<StockQuoteDto> post(@RequestBody @Valid StockQuoteForm form) {
+//		
+//		StockAux validationStock = stockService.findOneStockWithQuotesByStockId(form.getStockId());
+//		StockAux stock = form.convert();
+//		
+//		if(validationStock != null) {
+//			List<Quote> quotes = form.convertToQuotes(validationStock);
+//			stockService.saveQuotes(quotes);
+//			ResponseEntity<StockQuoteDto> re = new ResponseEntity<>( StockQuoteDto.convertOneStock(validationStock), HttpStatus.OK);
+//			return re;
+//		} else if (stockService.existsAtStockManager(stock)) {
+//			stock = stockService.saveDbStock(stock);
+//			List<Quote> quotes = form.convertToQuotes(stock);
+//			stockService.saveQuotes(quotes);
+//			ResponseEntity<StockQuoteDto> re = new ResponseEntity<>( StockQuoteDto.convertOneStock(stock), HttpStatus.CREATED);
+//			return re;
+//		}
+//		
+//		return ResponseEntity.notFound().build();
+//	}
+	
+	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ResponseEntity<StockQuoteDto> saveStock(@RequestBody StockQuoteForm form) {
+	@CacheEvict(value = { "stocksList", "oneStock" }, allEntries = true)
+	public ResponseEntity<?> createStockQuote(@RequestBody @Valid StockQuoteForm form) {
 
-		Optional<StockAux> stocksOpt = stockService.findByStockId(form.getStockId());
-		
-		System.out.println(form.getStockId());
-		System.out.println(stocksOpt);
-		
-		if(stocksOpt.isPresent()) {
-			StockAux stock = stocksOpt.get();
+		Optional<StockAux> opStock = stockService.findByStockId(form.getStockId());
+		StockAux stock = form.convert();
+
+		if (opStock.isPresent()) {
+			stock = opStock.get();
 			form.addQuote(stock);
-			stockService.saveQuotes(stock.getQuotes());
+			stockService.saveDbQuotes(stock.getQuotes());
+			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.OK);
+		}
+		else if(stockService.existsAtStockManager(stock)){
+			stock = stockService.saveDbStock(stock);
+			form.addQuote(stock);
+			stockService.saveDbQuotes(stock.getQuotes());
 			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.CREATED);
 		}
-		else if(stockService.existAtStockManager(form.getStockId())){
-			StockAux stock = form.convert();
-			stockService.save(stock);
-			form.addQuote(stock);
-			stockService.saveQuotes(stock.getQuotes());
-			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.CREATED);
+		else {
+			return new ResponseEntity<>("Bad Request. Please verify that the stock was created correctly to create a quote",HttpStatus.BAD_REQUEST);
 		}
-		
-		 return ResponseEntity.badRequest().build();
 	}
 	
 	
+	/**
+	 * Clean cache
+	 */
 	@DeleteMapping("/stockcache")
 	@CacheEvict(value = "stocksAtManagerList")
 	public void deleteCache() {
 		stockService.deleteCache();
 	}
-
-	@DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id){
-        return stockService.delete(id);
+	
+	/**
+	 * 
+	 * @param id
+	 * @return ResponseEntity
+	 */
+	@DeleteMapping("/{stockId}")
+    public ResponseEntity<?> delete(@PathVariable String stockId){
+        return stockService.delete(stockId);
     }
 
 }

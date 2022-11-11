@@ -12,14 +12,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.inatel.quotationmanagement.adapter.StockManagerAdapter;
-import br.com.inatel.quotationmanagement.controller.dto.StockDto;
 import br.com.inatel.quotationmanagement.controller.dto.StockManagerDto;
-import br.com.inatel.quotationmanagement.controller.dto.StockQuoteDto;
-import br.com.inatel.quotationmanagement.controller.form.StockQuoteForm;
 import br.com.inatel.quotationmanagement.model.Quote;
 import br.com.inatel.quotationmanagement.model.StockAux;
 import br.com.inatel.quotationmanagement.repository.QuoteRepository;
 import br.com.inatel.quotationmanagement.repository.StockRepository;
+
+/**
+ * 
+ * @author Maira ALves
+ * @since Oct. 2022
+ */
 
 @Service
 @Transactional
@@ -34,37 +37,57 @@ public class StockService {
 	@Autowired
 	StockManagerAdapter stockManagerAdapter;
 
+	/**
+	 * 
+	 * @return all the list of stocks
+	 */
 	public List<StockAux> findAll() {
 		List<StockAux> stocks = stockRepository.findAll();
 		stocks.forEach(s -> s.getQuotes().size());
 		return stocks;
 	}
 
+	/**
+	 * 
+	 * @param stockId
+	 * @return stock find by your stockId
+	 */
 	public Optional<StockAux> findByStockId(String stockId) {
-		StockAux stock = stockRepository.findOneStockByStockId(stockId);
-				
-		if (stock != null) {
-			stock.getQuotes().size();
-			return Optional.of(stock);
-		}
-		return Optional.empty();
+		Optional<StockAux> optionalStock = stockRepository.findByStockId(stockId);
+		optionalStock.map(stock -> stock.getQuotes().size());
+		return optionalStock;
+	}
+	
+	/**
+	 * 
+	 * @param stock
+	 * @return if the stock is valid in stock manager
+	 */
+	public boolean existsAtStockManager(StockAux stock) {
+		List<StockManagerDto> stocksAtManager = stockManagerAdapter.listAllStocks();
+		return stocksAtManager.stream().anyMatch(i -> i.getId().equals(stock.getStockId()));
 	}
 
-	public void saveQuotes(List<Quote> quotes) {
+	/**
+	 * 
+	 * @param quotes
+	 */
+	public void saveDbQuotes(List<Quote> quotes) {
 		quotes.forEach(q -> quoteRepository.save(q));
-	}
+	}	
 
-	public void save(StockAux stock) {
-		stockRepository.save(stock);
+	/**
+	 * 	
+	 * @param stock
+	 * @return stock
+	 */
+	public StockAux saveDbStock(StockAux stock) {
+		stock = stockRepository.save(stock);
+		return stock;
 	}
 
 	public void deleteCache() {
 		System.out.println("The cache was cleaned!");
-	}
-
-	public boolean existAtStockManager(String stockId) {
-		List<StockManagerDto> stocksAtManager = stockManagerAdapter.listAll();
-		return stocksAtManager.stream().anyMatch(s -> s.getId().equals(stockId));
 	}
 	
 	@CacheEvict(value = "stockList", allEntries = true)

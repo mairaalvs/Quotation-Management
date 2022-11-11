@@ -25,11 +25,12 @@ public class StockControllerTest {
 	
 	@Autowired
 	private WebTestClient webTestClient;
-
-//	given a read order (dado um pedido de leitura)
-//	when receiving all the stocks (quando receber todos os estoques)
-//	then it should return status 200 ok (então deve retornar status 200 ok)
-			
+	
+	/**
+	 * Given a read order
+	 * When receiving all the stocks
+	 * Then it should return status 200 ok
+	 */
 	@Test
 	void returnStatus200ByListingAllTheStockQuotes() {
 		webTestClient.get()
@@ -39,10 +40,11 @@ public class StockControllerTest {
 		.expectStatus().isOk();
 	}
 	
-//	given a read order by StockId (dado um pedido de leitura pelo StockId)
-//	when receiving the stock (quando receber o estoque)
-//	then it should return status 200 ok (então deve retornar status 200 ok)
-			
+	/**
+	 * Given a read order by StockId
+	 * When receiving the stock
+	 * Then it should return status 200 ok
+	 */
 	@Test
 	void returnStatus200ListingStockQuotesByStockId() {		
 		String stockId = "petr4";
@@ -59,10 +61,11 @@ public class StockControllerTest {
         assertEquals(stock.getStockId(),stockId);
 	}
 	
-//	given a read order by StockId invalid (dado um pedido de leitura pelo StockId invalido)
-//	when receiving the stock (quando receber o estoque)
-//	then it should return status 404 not found (então deve retornar status 404 not found)
-			
+	/**
+	 * Given a read order by StockId invalid
+	 * When receiving the stock
+	 * Then it should return status 404 not found
+	 */
 	@Test
 	void returnStatus404ListingStockQuotesByStockIdInvalid() {		
 		String stockId = "invalid";
@@ -77,11 +80,12 @@ public class StockControllerTest {
         
 		assertTrue(result.contains("Stock Not Found. Please check and retry the search!"));
 	}
-
-//	given valid StockId (dado um StockId valido)
-//	when Post Quote (quando lançar uma cotação)
-//	then it should return status 201 created (então deve retornar status 201 created)
 	
+	/**
+	 * Given valid StockId
+	 * When Post Quote
+	 * Then it should return status 201 created
+	 */
 	@Test
     void returnStatus201PostingQuoteByValidStockId() {
 		Map<LocalDate, Double> quotesMap = new HashMap<>();
@@ -100,11 +104,12 @@ public class StockControllerTest {
         assertNotNull(stock.getId());
         assertEquals("petr4",stock.getStockId());
     }
-    
-//	given invalid StockId (dado um StockId invalido)
-//	when Post Quote (quando lançar uma cotação)
-//	then it should return status 400 bad request (então deve retornar status 400 bad request)
 	
+	/**
+	 * Given invalid StockId
+	 * When Post Quote
+	 * Then it should return status 400 bad request
+	 */
 	@Test
     void returnStatus400PostingQuoteByInvalidStockId() {
 		Map<LocalDate, Double> quotesMap = new HashMap<>();
