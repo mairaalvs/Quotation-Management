@@ -43,6 +43,6 @@ public class StockManagerAdapter {
 	    fluxDto.blockLast();
 		
 	    return stocksAtManager;
-	}
+	} 
 	
 }
