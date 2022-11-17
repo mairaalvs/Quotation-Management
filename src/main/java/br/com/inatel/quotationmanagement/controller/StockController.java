@@ -75,60 +75,8 @@ public class StockController {
 	 * @param form
 	 * @return ResponseEntity and response body whether Stock was created or not 
 	 */
-//	@PostMapping()
-//	@ResponseStatus(code = HttpStatus.CREATED)
-//	public ResponseEntity<?> saveStock(@RequestBody StockQuoteForm form) {
-//
-//		Optional<StockAux> OpStock = stockService.findByStockId(form.getStockId());
-//		
-//		
-//		if(OpStock.isPresent()) {
-//			StockAux stock = OpStock.get();
-//			form.addQuote(stock);
-//			stockService.saveQuotes(stock.getQuotes());
-//			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.CREATED);
-//		}
-//		else if(stockService.existAtStockManager(form.getStockId())){
-//			StockAux stock = form.convert();
-//			stockService.save(stock);
-//			form.addQuote(stock);
-//			stockService.saveQuotes(stock.getQuotes());
-//			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.CREATED);
-//		} else {
-//			return new ResponseEntity<>("Bad Request. Please verify that the stock was created correctly to create a quote", HttpStatus.BAD_REQUEST);
-//		}
-//		
-////		if(stockService.existAtStockManager(form.getStockId())){
-////			
-////		}
-//	}
-	
-//	@PostMapping()
-//	@CacheEvict(value = {"stocksList", "oneStock"}, allEntries = true)
-//	public ResponseEntity<StockQuoteDto> post(@RequestBody @Valid StockQuoteForm form) {
-//		
-//		StockAux validationStock = stockService.findOneStockWithQuotesByStockId(form.getStockId());
-//		StockAux stock = form.convert();
-//		
-//		if(validationStock != null) {
-//			List<Quote> quotes = form.convertToQuotes(validationStock);
-//			stockService.saveQuotes(quotes);
-//			ResponseEntity<StockQuoteDto> re = new ResponseEntity<>( StockQuoteDto.convertOneStock(validationStock), HttpStatus.OK);
-//			return re;
-//		} else if (stockService.existsAtStockManager(stock)) {
-//			stock = stockService.saveDbStock(stock);
-//			List<Quote> quotes = form.convertToQuotes(stock);
-//			stockService.saveQuotes(quotes);
-//			ResponseEntity<StockQuoteDto> re = new ResponseEntity<>( StockQuoteDto.convertOneStock(stock), HttpStatus.CREATED);
-//			return re;
-//		}
-//		
-//		return ResponseEntity.notFound().build();
-//	}
-	
 	@PostMapping
-	@ResponseStatus(code = HttpStatus.CREATED)
-	@CacheEvict(value = { "stocksList", "oneStock" }, allEntries = true)
+	@CacheEvict(value = "stocksList", allEntries = true)
 	public ResponseEntity<?> createStockQuote(@RequestBody @Valid StockQuoteForm form) {
 
 		Optional<StockAux> opStock = stockService.findByStockId(form.getStockId());
@@ -151,24 +99,16 @@ public class StockController {
 		}
 	}
 	
-	
 	/**
-	 * Clean cache
+	 * @return Clean cache
 	 */
 	@DeleteMapping("/stockcache")
 	@CacheEvict(value = "stocksAtManagerList")
-	public void deleteCache() {
+    public ResponseEntity<?> deleteCache(){
 		stockService.deleteCache();
-	}
-	
-	/**
-	 * 
-	 * @param id
-	 * @return ResponseEntity
-	 */
-	@DeleteMapping("/{stockId}")
-    public ResponseEntity<?> delete(@PathVariable String stockId){
-        return stockService.delete(stockId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+	
+
 
 }

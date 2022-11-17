@@ -32,10 +32,10 @@ public class StockService {
 	private StockRepository stockRepository;
 
 	@Autowired
-	QuoteRepository quoteRepository;
+	private QuoteRepository quoteRepository;
 
 	@Autowired
-	StockManagerAdapter stockManagerAdapter;
+	private StockManagerAdapter stockManagerAdapter;
 
 	/**
 	 * 
@@ -90,15 +90,5 @@ public class StockService {
 		System.out.println("The cache was cleaned!");
 	}
 	
-	@CacheEvict(value = "stockList", allEntries = true)
-    public ResponseEntity<?> delete(String stockId){
-        Optional<StockAux> opStock = stockRepository.findByStockId(stockId);
-        if(opStock.isPresent()){
-            List<Quote> quotes = opStock.get().getQuotes();
-            stockRepository.delete(opStock.get());
-            quoteRepository.deleteAll(quotes);
-            return new ResponseEntity<>("Delete",HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>("StockId Not Found. Please check and retry the search!",HttpStatus.NOT_FOUND);
-    }	
+
 }
