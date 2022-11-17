@@ -1,0 +1,9 @@
+br.com.inatel.quotationmanagement
+br.com.inatel.quotationmanagement.adapter
+br.com.inatel.quotationmanagement.controller
+br.com.inatel.quotationmanagement.controller.dto
+br.com.inatel.quotationmanagement.controller.form
+br.com.inatel.quotationmanagement.model
+br.com.inatel.quotationmanagement.repository
+br.com.inatel.quotationmanagement.service
+br.com.inatel.quotationmanagement.swagger
