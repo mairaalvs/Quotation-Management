@@ -8,18 +8,21 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.reactive.function.BodyInserters;
 
 import br.com.inatel.quotationmanagement.controller.form.StockQuoteForm;
 import br.com.inatel.quotationmanagement.model.StockAux;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
 public class StockControllerTest {
 	
@@ -32,6 +35,7 @@ public class StockControllerTest {
 	 * Then it should return status 200 ok
 	 */
 	@Test
+	@Order(1)
 	void returnStatus200ByListingAllTheStockQuotes() {
 		webTestClient.get()
 		.uri("/stock")
@@ -46,6 +50,7 @@ public class StockControllerTest {
 	 * Then it should return status 200 ok
 	 */
 	@Test
+	@Order(2)
 	void returnStatus200ListingStockQuotesByStockId() {		
 		String stockId = "petr4";
 
@@ -67,6 +72,7 @@ public class StockControllerTest {
 	 * Then it should return status 404 not found
 	 */
 	@Test
+	@Order(3)
 	void returnStatus404ListingStockQuotesByStockIdInvalid() {		
 		String stockId = "invalid";
 
@@ -83,15 +89,16 @@ public class StockControllerTest {
 	
 	/**
 	 * Given valid StockId
-	 * When Post Quote
+	 * When Post Stock with quote
 	 * Then it should return status 201 created
 	 */
 	@Test
+	@Order(4)
     void returnStatus201PostingQuoteByValidStockId() {
 		Map<LocalDate, Double> quotesMap = new HashMap<>();
         LocalDate date = LocalDate.now();
         quotesMap.put(date, 13.0);
-        StockQuoteForm stockQuoteForm = new StockQuoteForm("petr4", quotesMap);
+        StockQuoteForm stockQuoteForm = new StockQuoteForm("petr1", quotesMap);
         
         StockAux stock = webTestClient.post()
                 .uri("/stock")
@@ -102,7 +109,32 @@ public class StockControllerTest {
                 .returnResult().getResponseBody();
 
         assertNotNull(stock.getId());
-        assertEquals("petr4",stock.getStockId());
+        assertEquals("petr1",stock.getStockId());
+    }
+	
+	/**
+	 * Given valid StockId
+	 * When Post Quote
+	 * Then it should return status 200 ok
+	 */
+	@Test
+	@Order(5)
+    void returnStatus200PostingQuoteByValidStockId() {
+		Map<LocalDate, Double> quotesMap = new HashMap<>();
+        LocalDate date = LocalDate.now();
+        quotesMap.put(date, 20.0);
+        StockQuoteForm stockQuoteForm = new StockQuoteForm("petr1", quotesMap);
+        
+        StockAux stock = webTestClient.post()
+                .uri("/stock")
+                .bodyValue(stockQuoteForm)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(StockAux.class)
+                .returnResult().getResponseBody();
+
+        assertNotNull(stock.getId());
+        assertEquals("petr1",stock.getStockId());
     }
 	
 	/**
@@ -111,6 +143,7 @@ public class StockControllerTest {
 	 * Then it should return status 400 bad request
 	 */
 	@Test
+	@Order(6)
     void returnStatus400PostingQuoteByInvalidStockId() {
 		Map<LocalDate, Double> quotesMap = new HashMap<>();
         LocalDate date = LocalDate.now();
@@ -128,6 +161,18 @@ public class StockControllerTest {
         assertTrue(result.contains("Bad Request. Please verify that the stock was created correctly to create a quote"));
     }
 	
-	
+	/**
+	 * Given a read order
+	 * When receiving all the stocks
+	 * Then it should return status 200 ok
+	 */
+	@Test
+	@Order(7)
+	void returnStatus204ByDeletedTheStockCache() {
+		webTestClient.delete()
+		.uri("/stock/stockcache")
+		.exchange()
+		.expectStatus().isNoContent();
+	}
 	
 }
