@@ -4,30 +4,19 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-import br.com.inatel.quotationmanagement.controller.dto.StockManagerDto;
 import br.com.inatel.quotationmanagement.controller.dto.StockQuoteDto;
-import br.com.inatel.quotationmanagement.controller.form.StockQuoteForm;
-import br.com.inatel.quotationmanagement.model.Quote;
 import br.com.inatel.quotationmanagement.model.StockAux;
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ActiveProfiles("test")
 public class StockServiceTest {
 
 	@Autowired
@@ -40,7 +29,7 @@ public class StockServiceTest {
 	 */	
 	@Test
 	@Order(1)
-	public void returnAllListOfStocks() {
+	public void givenAGetOnAllStock_WhenReceiveAllStocks_() {
 		List<StockAux> stockQuotes = stockService.findAll();
 		List<StockQuoteDto> stockQuotesDto = StockQuoteDto.convert(stockQuotes);
 

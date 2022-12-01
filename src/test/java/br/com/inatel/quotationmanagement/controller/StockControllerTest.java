@@ -8,26 +8,17 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import br.com.inatel.quotationmanagement.controller.form.StockQuoteForm;
 import br.com.inatel.quotationmanagement.model.StockAux;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ActiveProfiles("test")
 public class StockControllerTest {
-	
-	@Autowired
-	private WebTestClient webTestClient;
 	
 	/**
 	 * Given a read order
@@ -36,8 +27,8 @@ public class StockControllerTest {
 	 */
 	@Test
 	@Order(1)
-	void returnStatus200ByListingAllTheStockQuotes() {
-		webTestClient.get()
+	void givenAReadOrder_WhenReceivingAllTheStocks_ThenItShouldReturnStatus200Ok() {
+		WebTestClient.bindToServer().baseUrl("http://localhost:8081").build().get()
 		.uri("/stock")
 		.exchange()
 		.expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -45,16 +36,18 @@ public class StockControllerTest {
 	}
 	
 	/**
-	 * Given a read order by StockId
+	 * Given a read order by StockId valid
 	 * When receiving the stock
 	 * Then it should return status 200 ok
 	 */
 	@Test
 	@Order(2)
-	void returnStatus200ListingStockQuotesByStockId() {		
+	void givenAReadOrderByStockIdValid_WhenReceivingTheStock_ThenItShouldReturnStatus200Ok() {		
 		String stockId = "petr4";
 
-        StockAux stock = webTestClient.get()
+        StockAux stock = WebTestClient.bindToServer()
+        		.baseUrl("http://localhost:8081").build()
+        		.get()
                 .uri("/stock/" + stockId)
                 .exchange()
                 .expectStatus().isOk()
@@ -68,15 +61,18 @@ public class StockControllerTest {
 	
 	/**
 	 * Given a read order by StockId invalid
-	 * When receiving the stock
+	 * When not receiving the stock
 	 * Then it should return status 404 not found
 	 */
+	
 	@Test
 	@Order(3)
-	void returnStatus404ListingStockQuotesByStockIdInvalid() {		
+	void givenAReadOrderByStockIdInvalid_WhenNotReceivingTheStock_ThenItShouldReturnStatus404NotFound() {		
 		String stockId = "invalid";
 
-		String result = webTestClient.get()
+		String result = WebTestClient.bindToServer()
+				.baseUrl("http://localhost:8081").build()
+				.get()
                 .uri("/stock/" + stockId)
                 .exchange()
                 .expectStatus().isNotFound()
@@ -89,18 +85,20 @@ public class StockControllerTest {
 	
 	/**
 	 * Given valid StockId
-	 * When Post Stock with quote
+	 * When create stock with quotes in the correct structure
 	 * Then it should return status 201 created
 	 */
 	@Test
 	@Order(4)
-    void returnStatus201PostingQuoteByValidStockId() {
+    void givenValidStockId_WhenCreateStockWithQuotesInTheCorrectStructure_ThenItShouldReturnStatus201Created() {
 		Map<LocalDate, Double> quotesMap = new HashMap<>();
         LocalDate date = LocalDate.now();
         quotesMap.put(date, 13.0);
         StockQuoteForm stockQuoteForm = new StockQuoteForm("petr1", quotesMap);
         
-        StockAux stock = webTestClient.post()
+        StockAux stock = WebTestClient
+        		.bindToServer().baseUrl("http://localhost:8081").build()
+        		.post()
                 .uri("/stock")
                 .bodyValue(stockQuoteForm)
                 .exchange()
@@ -114,18 +112,20 @@ public class StockControllerTest {
 	
 	/**
 	 * Given valid StockId
-	 * When Post Quote
+	 * When add quotes in the correct structure
 	 * Then it should return status 200 ok
 	 */
 	@Test
 	@Order(5)
-    void returnStatus200PostingQuoteByValidStockId() {
+    void givenValidStockId_WhenAddQuotesInTheCorrectStructure_ThenItShouldReturnStatus200Ok() {
 		Map<LocalDate, Double> quotesMap = new HashMap<>();
         LocalDate date = LocalDate.now();
         quotesMap.put(date, 20.0);
         StockQuoteForm stockQuoteForm = new StockQuoteForm("petr1", quotesMap);
         
-        StockAux stock = webTestClient.post()
+        StockAux stock = WebTestClient
+        		.bindToServer().baseUrl("http://localhost:8081").build()
+        		.post()
                 .uri("/stock")
                 .bodyValue(stockQuoteForm)
                 .exchange()
@@ -139,37 +139,40 @@ public class StockControllerTest {
 	
 	/**
 	 * Given invalid StockId
-	 * When Post Quote
-	 * Then it should return status 400 bad request
+	 * When try create or add stock and quotes 
+	 * Then it should return status 404 not found
 	 */
 	@Test
 	@Order(6)
-    void returnStatus400PostingQuoteByInvalidStockId() {
+    void givenInvalidStockId_WhenTryCreateOrAddStockAndQuotes_ThenItShouldReturnStatus404NotFound() {
 		Map<LocalDate, Double> quotesMap = new HashMap<>();
         LocalDate date = LocalDate.now();
         quotesMap.put(date, 13.0);
         StockQuoteForm stockQuoteForm = new StockQuoteForm("invalid", quotesMap);
         
-        String result = webTestClient.post()
+        String result = WebTestClient
+        		.bindToServer().baseUrl("http://localhost:8081").build()
+        		.post()
                 .uri("/stock")
                 .bodyValue(stockQuoteForm)
                 .exchange()
-                .expectStatus().isBadRequest()
+                .expectStatus().isNotFound()
                 .expectBody(String.class)
                 .returnResult().getResponseBody();
 
-        assertTrue(result.contains("Bad Request. Please verify that the stock was created correctly to create a quote"));
+        assertTrue(result.contains("Stock Not Found. Please verify that the stock was created correctly to create a quote"));
     }
 	
 	/**
-	 * Given a read order
-	 * When receiving all the stocks
-	 * Then it should return status 200 ok
+	 * Given a delete cache order
+	 * Then it should return status 204 no content
 	 */
 	@Test
 	@Order(7)
-	void returnStatus204ByDeletedTheStockCache() {
-		webTestClient.delete()
+	void givenADeleteCacheOrder_ThenItShouldReturnStatus204NoContent() {
+		WebTestClient.bindToServer()
+		.baseUrl("http://localhost:8081").build()
+		.delete()
 		.uri("/stock/stockcache")
 		.exchange()
 		.expectStatus().isNoContent();

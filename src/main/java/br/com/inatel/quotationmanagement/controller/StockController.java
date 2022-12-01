@@ -12,18 +12,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.inatel.quotationmanagement.controller.dto.StockQuoteDto;
 import br.com.inatel.quotationmanagement.controller.form.StockQuoteForm;
 import br.com.inatel.quotationmanagement.model.StockAux;
 import br.com.inatel.quotationmanagement.service.StockService;
-
 
 /**
  * 
@@ -32,7 +30,7 @@ import br.com.inatel.quotationmanagement.service.StockService;
  */
 
 @RestController
-@RequestMapping("/stock")
+@RequestMapping("/quote")
 public class StockController {
 
 	@Autowired
@@ -40,6 +38,7 @@ public class StockController {
 
 	/**
 	 * the list of all stocks and their quotes already entered
+	 * 
 	 * @return
 	 */
 	@GetMapping
@@ -53,11 +52,10 @@ public class StockController {
 	/**
 	 * 
 	 * @param stockId
-	 * @return only Stock searched by your stockId 
+	 * @return only Stock searched by your stockId
 	 */
-	@GetMapping("/{stockId}")
-	public ResponseEntity<?> listOne(@PathVariable("stockId") String stockId) {
-
+	@GetMapping("/stock")
+	public ResponseEntity<?> listOne(@RequestParam("id") String stockId) {
 		Optional<StockAux> OpStock = stockService.findByStockId(stockId);
 
 		if (OpStock.isPresent()) {
@@ -67,13 +65,13 @@ public class StockController {
 		} else {
 			return new ResponseEntity<>("Stock Not Found. Please check and retry the search!", HttpStatus.NOT_FOUND);
 		}
-		
+
 	}
 
 	/**
 	 * 
 	 * @param form
-	 * @return ResponseEntity and response body whether Stock was created or not 
+	 * @return ResponseEntity and response body whether Stock was created or not
 	 */
 	@PostMapping
 	@CacheEvict(value = "stocksList", allEntries = true)
@@ -87,28 +85,26 @@ public class StockController {
 			form.addQuote(stock);
 			stockService.saveDbQuotes(stock.getQuotes());
 			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.OK);
-		}
-		else if(stockService.existsAtStockManager(stock)){
+		} else if (stockService.existsAtStockManager(stock)) {
 			stock = stockService.saveDbStock(stock);
 			form.addQuote(stock);
 			stockService.saveDbQuotes(stock.getQuotes());
 			return new ResponseEntity<>(new StockQuoteDto(stock), HttpStatus.CREATED);
-		}
-		else {
-			return new ResponseEntity<>("Bad Request. Please verify that the stock was created correctly to create a quote",HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<>(
+					"Stock Not Found. Please verify that the stock was created correctly to create a quote",
+					HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	/**
 	 * @return Clean cache
 	 */
 	@DeleteMapping("/stockcache")
 	@CacheEvict(value = "stocksAtManagerList")
-    public ResponseEntity<?> deleteCache(){
+	public ResponseEntity<?> deleteCache() {
 		stockService.deleteCache();
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-	
-
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
 
 }

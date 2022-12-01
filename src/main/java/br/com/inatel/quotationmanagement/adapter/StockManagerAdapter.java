@@ -33,7 +33,7 @@ public class StockManagerAdapter {
 		
 		List<StockManagerDto> stocksAtManager = new ArrayList<>();
 		
-		Flux<StockManagerDto> fluxDto = WebClient.builder().baseUrl("http://" + URL_MANAGER).build()
+		Flux<StockManagerDto> fluxDto = WebClient.builder().baseUrl(URL_MANAGER).build()
 				.get()
 				.uri("/stock")
 				.retrieve()
